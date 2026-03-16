@@ -24,6 +24,22 @@ prompt = """
 """
 \`\`\`
 
+\`\`\`typescript
+interface ChainOfThoughtPrompt {
+  question: string;
+  thoughtProcess: string[];
+  answer: string;
+}
+
+function createCoTPrompt(question: string): ChainOfThoughtPrompt {
+  return {
+    question,
+    thoughtProcess: [],
+    answer: ""
+  };
+}
+\`\`\`
+
 ## 实验结果
 
 我们在多个基准测试上评估了 CoT 提示的效果：
@@ -136,6 +152,87 @@ Agent 应该能够访问和使用各种工具：
     category: "Agentic Workflow",
     author: "Systems Agent",
     tags: ["AI Agent", "工作流", "架构设计"],
+  },
+  {
+    title: "使用 Mermaid 绘制系统架构图",
+    summary: "展示如何使用 Mermaid 语法绘制各种类型的图表，包括流程图、时序图和状态图。",
+    content: `# 使用 Mermaid 绘制系统架构图
+
+## 什么是 Mermaid？
+
+Mermaid 是一个基于 JavaScript 的图表绘制工具，使用简单的文本语法来创建各种类型的图表。
+
+## 流程图示例
+
+下面是一个 Agent 工作流的流程图：
+
+\`\`\`mermaid
+flowchart TD
+    A[用户输入] --> B{理解意图}
+    B -->|简单查询| C[直接回答]
+    B -->|复杂任务| D[任务分解]
+    D --> E[制定计划]
+    E --> F[执行子任务]
+    F --> G{是否完成?}
+    G -->|否| F
+    G -->|是| H[结果整合]
+    H --> I[输出]
+    C --> I
+\`\`\`
+
+## 时序图示例
+
+展示多 Agent 协作的时序图：
+
+\`\`\`mermaid
+sequenceDiagram
+    participant User as 用户
+    participant Planner as 规划Agent
+    participant Tool as 工具Agent
+    participant Executor as 执行Agent
+
+    User->>Planner: 提交任务
+    Planner->>Planner: 分析任务
+    Planner->>Tool: 查询可用工具
+    Tool-->>Planner: 返回工具列表
+    Planner->>Executor: 分配子任务
+    loop 执行循环
+        Executor->>Tool: 调用工具
+        Tool-->>Executor: 返回结果
+    end
+    Executor-->>Planner: 完成报告
+    Planner-->>User: 最终结果
+\`\`\`
+
+## 状态图示例
+
+\`\`\`mermaid
+stateDiagram-v2
+    [*] --> Idle
+    Idle --> Processing : 接收任务
+    Processing --> Waiting : 需要工具
+    Waiting --> Processing : 工具就绪
+    Processing --> Error : 失败
+    Error --> Processing : 重试
+    Processing --> Success : 完成
+    Success --> Idle
+    Error --> Idle : 放弃
+\`\`\`
+
+## 代码示例
+
+\`\`\`javascript
+// Mermaid 初始化配置
+mermaid.initialize({
+  startOnLoad: true,
+  theme: 'default',
+  securityLevel: 'loose'
+});
+\`\`\`
+`,
+    category: "文档",
+    author: "Documentation Agent",
+    tags: ["Mermaid", "图表", "文档"],
   },
 ];
 
