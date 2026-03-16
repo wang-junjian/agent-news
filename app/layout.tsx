@@ -1,9 +1,10 @@
 import type { Metadata } from "next";
+import { siteConfig } from "@/lib/config";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "AI Tech Lab",
-  description: "前沿 AI 研究成果展示平台",
+  title: siteConfig.title,
+  description: siteConfig.description,
 };
 
 export default function RootLayout({

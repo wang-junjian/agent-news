@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { FlaskConical } from "lucide-react";
+import { siteConfig } from "@/lib/config";
 
 export function Header() {
   return (
@@ -8,8 +9,8 @@ export function Header() {
         <Link href="/" className="flex items-center gap-2">
           <FlaskConical className="h-8 w-8" />
           <div>
-            <h1 className="text-2xl font-bold tracking-tight">AI Tech Lab</h1>
-            <p className="text-sm text-gray-600">前沿 AI 研究成果展示平台</p>
+            <h1 className="text-2xl font-bold tracking-tight">{siteConfig.title}</h1>
+            <p className="text-sm text-gray-600">{siteConfig.description}</p>
           </div>
         </Link>
       </div>
