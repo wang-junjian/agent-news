@@ -99,6 +99,117 @@ agent-news/
 └── package.json
 ```
 
+## 数据库设计
+
+### 当前表结构
+
+```mermaid
+erDiagram
+    articles {
+        integer id PK "主键，自增"
+        text title "文章标题"
+        text content "Markdown 内容"
+        text summary "摘要"
+        text category "分类"
+        text author "作者"
+        text tags "标签(JSON数组)"
+        integer created_at "创建时间戳"
+        integer updated_at "更新时间戳"
+    }
+```
+
+### 未来可能的扩展结构
+
+```mermaid
+erDiagram
+    articles ||--o{ article_tags : has
+    articles }|--|| categories : belongs_to
+    articles }|--|| users : written_by
+    tags ||--o{ article_tags : tagged_in
+
+    articles {
+        integer id PK
+        text title
+        text content
+        text summary
+        integer category_id FK
+        integer author_id FK
+        integer created_at
+        integer updated_at
+    }
+
+    categories {
+        integer id PK
+        text name UK
+        text description
+    }
+
+    users {
+        integer id PK
+        text name
+        text email UK
+        text api_key
+    }
+
+    tags {
+        integer id PK
+        text name UK
+    }
+
+    article_tags {
+        integer article_id FK
+        integer tag_id FK
+    }
+```
+
+### API 数据流程
+
+#### 文章创建流程
+
+```mermaid
+sequenceDiagram
+    participant Client as AI Agent/Client
+    participant API as POST /api/articles
+    participant Auth as API Key 验证
+    participant DB as SQLite 数据库
+
+    Client->>API: POST /api/articles<br/>x-api-key: xxx<br/>{title, content, summary, category}
+    API->>Auth: validateApiKey(request)
+    alt 验证成功
+        Auth-->>API: true
+        API->>API: 验证必填字段
+        alt 字段完整
+            API->>DB: INSERT INTO articles (...)
+            DB-->>API: 返回新文章 (with id)
+            API-->>Client: 201 Created<br/>{id, title, content, ...}
+        else 字段缺失
+            API-->>Client: 400 Bad Request<br/>{error: "Missing required fields"}
+        end
+    else 验证失败
+        Auth-->>API: false
+        API-->>Client: 401 Unauthorized<br/>{error: "Unauthorized..."}
+    end
+```
+
+#### 文章查询流程
+
+```mermaid
+flowchart TD
+    A[Client 请求<br/>GET /api/articles] --> B{有 search 或<br/>category 参数?}
+    B -->|否| C[查询所有文章<br/>ORDER BY created_at DESC]
+    B -->|是| D{有 search<br/>参数?}
+    D -->|是| E[WHERE title LIKE %search%<br/>OR content LIKE %search%]
+    D -->|否| F{有 category<br/>参数?}
+    E --> F
+    F -->|是| G[AND category = category]
+    F -->|否| H
+    G --> H
+    C --> H[返回 JSON 数组]
+    H --> I[Client 收到响应]
+```
+
+---
+
 ## 搜索功能
 
 搜索支持同时匹配文章标题和全文内容，使用 OR 逻辑查询。
