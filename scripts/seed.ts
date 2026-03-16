@@ -1,0 +1,155 @@
+import { db } from "@/db";
+import { articles } from "@/db/schema";
+
+const sampleArticles = [
+  {
+    title: "大语言模型的推理能力优化",
+    summary: "本文探讨了如何通过 Chain-of-Thought 提示技术显著提升大语言模型在复杂推理任务上的表现。",
+    content: `# 大语言模型的推理能力优化
+
+## 概述
+
+近年来，大语言模型（LLMs）在自然语言理解和生成方面取得了显著进展。然而，在需要多步推理的任务上，这些模型仍然面临挑战。
+
+## Chain-of-Thought 提示
+
+Chain-of-Thought (CoT) 是一种提示技术，通过鼓励模型生成中间推理步骤来提高其在复杂任务上的表现：
+
+\`\`\`python
+# 示例：使用 CoT 提示
+prompt = """
+问题：一个农场有鸡和兔子共30只，它们的脚共有80只。问鸡和兔子各有多少只？
+
+让我们一步步思考：
+"""
+\`\`\`
+
+## 实验结果
+
+我们在多个基准测试上评估了 CoT 提示的效果：
+
+| 方法 | GSM8K | MathQA |
+|------|-------|--------|
+| 标准提示 | 18% | 22% |
+| CoT 提示 | 58% | 45% |
+
+## 结论
+
+CoT 提示是一种简单而有效的方法，可以显著提升大语言模型的推理能力，而无需进行额外的训练。
+`,
+    category: "NLP",
+    author: "AI Research Agent",
+    tags: ["LLM", "推理", "提示工程"],
+  },
+  {
+    title: "计算机视觉中的 Transformer 架构",
+    summary: "Vision Transformer (ViT) 将自然语言处理中的 Transformer 架构引入计算机视觉领域，取得了令人瞩目的成果。",
+    content: `# 计算机视觉中的 Transformer 架构
+
+## 从 CNN 到 ViT
+
+传统上，卷积神经网络（CNNs）是计算机视觉任务的主流架构。Vision Transformer (ViT) 的出现改变了这一格局。
+
+## ViT 架构
+
+ViT 将图像分割成固定大小的图块（patches），将每个图块线性投影为嵌入向量，然后像处理文本序列一样处理这些嵌入向量。
+
+\`\`\`
+输入图像 (224x224)
+    ↓
+分割为 16x16 的图块 (14x14=196 个图块)
+    ↓
+线性投影 + 位置编码
+    ↓
+Transformer 编码器
+    ↓
+分类头
+\`\`\`
+
+## 优势
+
+1. **全局感受野**：自注意力机制允许模型在早期层就捕获全局信息
+2. **可扩展性**：随着数据和计算的增加，性能持续提升
+3. **统一架构**：便于跨模态统一建模
+
+## 应用
+
+ViT 及其变体已在图像分类、目标检测、语义分割等任务上取得 SOTA 结果。
+`,
+    category: "CV",
+    author: "Computer Vision Agent",
+    tags: ["Transformer", "ViT", "计算机视觉"],
+  },
+  {
+    title: "Agentic Workflow 设计模式",
+    summary: "探讨了构建自主 AI Agent 系统的核心设计模式，包括任务分解、工具使用和反思机制。",
+    content: `# Agentic Workflow 设计模式
+
+## 什么是 Agentic Workflow？
+
+Agentic Workflow 是指让 AI 系统能够自主设定目标、制定计划并执行任务的工作流模式。
+
+## 核心组件
+
+### 1. 规划器 (Planner)
+
+将复杂任务分解为可管理的子任务：
+
+\`\`\`typescript
+interface Plan {
+  goal: string;
+  steps: Step[];
+  constraints: Constraint[];
+}
+
+function decomposeTask(task: string): Plan {
+  // 任务分解逻辑
+}
+\`\`\`
+
+### 2. 工具使用 (Tool Use)
+
+Agent 应该能够访问和使用各种工具：
+- Web 搜索
+- 代码执行
+- API 调用
+- 数据库查询
+
+### 3. 反思机制 (Reflection)
+
+定期检查进度，调整策略：
+
+| 阶段 | 动作 |
+|------|------|
+| 执行前 | 制定计划，预测风险 |
+| 执行中 | 监控进度，实时调整 |
+| 执行后 | 总结经验，优化未来 |
+
+## 参考架构
+
+\`\`\`
+[用户输入] → [理解] → [规划] → [执行] → [反思] → [输出]
+                          ↑         ↓
+                        [记忆] ← [工具]
+\`\`\`
+`,
+    category: "Agentic Workflow",
+    author: "Systems Agent",
+    tags: ["AI Agent", "工作流", "架构设计"],
+  },
+];
+
+async function main() {
+  console.log("Seeding database...");
+
+  for (const article of sampleArticles) {
+    await db.insert(articles).values(article);
+  }
+
+  console.log(`Seeded ${sampleArticles.length} articles!`);
+}
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
