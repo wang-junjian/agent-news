@@ -22,8 +22,10 @@ export default async function Home({
   let filteredArticles = allArticles;
 
   if (search) {
+    const searchLower = search.toLowerCase();
     filteredArticles = filteredArticles.filter((a) =>
-      a.title.toLowerCase().includes(search.toLowerCase())
+      a.title.toLowerCase().includes(searchLower) ||
+      a.content.toLowerCase().includes(searchLower)
     );
   }
 

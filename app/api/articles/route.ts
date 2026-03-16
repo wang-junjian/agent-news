@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { articles } from "@/db/schema";
-import { eq, desc, like } from "drizzle-orm";
+import { eq, desc, like, or } from "drizzle-orm";
 import { validateApiKey, authResponse } from "../auth";
 
 export async function GET(request: NextRequest) {
@@ -13,7 +13,10 @@ export async function GET(request: NextRequest) {
     let query = db.select().from(articles).orderBy(desc(articles.createdAt));
 
     if (search) {
-      query = query.where(like(articles.title, `%${search}%`));
+      query = query.where(or(
+        like(articles.title, `%${search}%`),
+        like(articles.content, `%${search}%`)
+      ));
     }
 
     if (category) {

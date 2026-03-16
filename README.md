@@ -58,7 +58,7 @@ npm run test:coverage
 | `components/article-card.test.tsx` | 文章卡片组件测试 |
 | `db/schema.test.ts` | 数据库类型定义测试 |
 | `api/auth.test.ts` | API Key 认证模块测试 |
-| `api/articles.test.ts` | 文章数据库操作集成测试 |
+| `api/articles.test.ts` | 文章数据库操作 & 搜索功能集成测试 |
 | `api/categories.test.ts` | 分类查询集成测试 |
 
 ## 项目结构
@@ -95,6 +95,26 @@ agent-news/
 │       ├── articles.test.ts
 │       └── categories.test.ts
 └── package.json
+```
+
+## 搜索功能
+
+搜索支持同时匹配文章标题和全文内容，使用 OR 逻辑查询。
+
+### 实现原理
+
+- **前端**: [search-filters.tsx](components/search-filters.tsx) - 处理用户输入，通过 URL searchParams 传递搜索条件
+- **服务端页面**: [page.tsx](app/page.tsx) - 在内存中过滤文章（用于首页展示）
+- **API 路由**: [api/articles/route.ts](app/api/articles/route.ts) - 使用 Drizzle ORM 的 `or()` + `like()` 进行 SQL 查询
+
+### 搜索示例
+
+```bash
+# 搜索标题或内容中包含 "大语言" 的文章
+curl "http://localhost:3000/api/articles?search=大语言"
+
+# 搜索 + 分类过滤
+curl "http://localhost:3000/api/articles?search=Agent&category=Agentic%20Workflow"
 ```
 
 ## API 使用
@@ -134,7 +154,7 @@ GET /api/articles
 ```
 
 查询参数：
-- `search` (可选): 按标题模糊搜索
+- `search` (可选): 按标题和全文模糊搜索（不区分大小写）
 - `category` (可选): 按分类过滤
 
 响应示例 (200 OK):
