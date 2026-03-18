@@ -36,6 +36,56 @@ npm run dev
 
 访问 http://localhost:3000 查看应用。
 
+## 生产环境部署
+
+要在生产环境中部署此应用，请遵循以下步骤：
+
+### 1. 构建应用
+
+首先，生成优化后的生产版本：
+
+```bash
+npm run build
+```
+
+### 2. 使用 PM2 部署
+
+项目包含一个 `ecosystem.config.js` 文件，用于 PM2 进程管理。它配置为直接运行 Next.js 生产服务器。
+
+#### 安装 PM2 (如果尚未安装)
+
+```bash
+npm install pm2 -g
+```
+
+#### 启动服务
+
+```bash
+pm2 start
+```
+
+这会根据 `ecosystem.config.js` 中的配置启动应用。默认情况下，应用将在端口 `80` 上运行。
+
+#### 常用 PM2 命令
+
+```bash
+# 查看所有进程
+pm2 list
+
+# 查看日志
+pm2 logs agent-news
+
+# 重启应用
+pm2 restart agent-news
+
+# 停止应用
+pm2 stop agent-news
+
+# 删除应用
+pm2 delete agent-news
+```
+
+
 ## 运行测试
 
 ```bash

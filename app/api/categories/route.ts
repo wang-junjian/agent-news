@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { articles } from "@/db/schema";
-import { distinct } from "drizzle-orm";
+// No imports needed from drizzle-orm if distinct is not used here manually
 
 export async function GET() {
   try {
-    const results = await db.select({ category: distinct(articles.category) }).from(articles);
+    const results = await db.selectDistinct({ category: articles.category }).from(articles);
     const categories = results.map((r) => r.category);
     return NextResponse.json(categories);
   } catch (error) {

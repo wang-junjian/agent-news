@@ -49,6 +49,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
             const mermaid = await import("mermaid");
 
             // 确保 mermaid 只初始化一次
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             if (!(window as any).__mermaidInit) {
               mermaid.default.initialize({
                 startOnLoad: false,
@@ -56,6 +57,7 @@ export function MarkdownRenderer({ content }: MarkdownRendererProps) {
                 securityLevel: "loose",
                 suppressErrorRendering: false,
               });
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               (window as any).__mermaidInit = true;
             }
 

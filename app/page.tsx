@@ -14,7 +14,7 @@ export default async function Home({
 }) {
   const { search, category } = await searchParams;
 
-  let query = db.select().from(articles).orderBy(desc(articles.createdAt));
+  const query = db.select().from(articles).orderBy(desc(articles.createdAt));
 
   const allArticles = await query;
   const categories = [...new Set(allArticles.map((a) => a.category))];

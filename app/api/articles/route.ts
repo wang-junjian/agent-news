@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { db } from "@/db";
 import { articles } from "@/db/schema";
-import { eq, desc, like, or } from "drizzle-orm";
+import { eq, desc, like, or, and } from "drizzle-orm";
 import { validateApiKey, authResponse } from "../auth";
 
 export async function GET(request: NextRequest) {
@@ -12,20 +12,21 @@ export async function GET(request: NextRequest) {
 
     let query = db.select().from(articles).orderBy(desc(articles.createdAt));
 
+    const filters = [];
     if (search) {
-      query = query.where(or(
+      filters.push(or(
         like(articles.title, `%${search}%`),
         like(articles.content, `%${search}%`)
       ));
     }
 
     if (category) {
-      if (search) {
-        // @ts-ignore - drizzle type issue with multiple where clauses
-        query = query.where(eq(articles.category, category));
-      } else {
-        query = query.where(eq(articles.category, category));
-      }
+      filters.push(eq(articles.category, category));
+    }
+
+    if (filters.length > 0) {
+      // @ts-expect-error - drizzle type issue with dynamic filters
+      query = query.where(and(...filters));
     }
 
     const results = await query;

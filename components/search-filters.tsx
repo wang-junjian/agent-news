@@ -3,7 +3,7 @@
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, X } from "lucide-react";
-import { useRouter, useSearchParams } from "next/navigation";
+import { useRouter } from "next/navigation";
 import { useState, useTransition } from "react";
 
 interface SearchFiltersProps {
@@ -18,7 +18,6 @@ export function SearchFilters({
   currentCategory,
 }: SearchFiltersProps) {
   const router = useRouter();
-  const searchParams = useSearchParams();
   const [search, setSearch] = useState(currentSearch || "");
   const [isPending, startTransition] = useTransition();
 
