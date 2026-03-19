@@ -95,3 +95,92 @@ curl -X DELETE ${BASE_URL:-http://118.145.101.171}/api/articles/1 \
 ```bash
 curl ${BASE_URL:-http://118.145.101.171}/api/categories
 ```
+
+## 生产部署操作
+
+### 部署流程
+使用 PM2 进程管理器进行生产环境部署。
+
+#### 连接生产服务器
+```bash
+ssh root@118.145.101.171
+```
+
+#### 1. 检查 /root/app/agent-news 目录是否存在
+
+##### 存在
+
+更新仓库内容
+
+```bash
+cd /root/app/agent-news
+git pull
+```
+
+##### 不存在
+
+克隆仓库并初始化
+```bash
+cd /root/app
+git clone https://github.com/wang-junjian/agent-news.git
+cd agent-news/
+```
+
+#### 2. 安装依赖
+```bash
+npm install
+```
+
+#### 3. 设置数据库
+```bash
+npm run setup
+```
+
+#### 4. 构建应用
+```bash
+npm run build
+```
+
+#### 5. 使用 PM2 启动服务
+```bash
+pm2 start
+```
+启动后输出示例：
+```
+[PM2][WARN] Applications agent-news not running, starting...
+[PM2] App [agent-news] launched (1 instances)
+```
+
+#### 6. 查看服务状态
+```bash
+pm2 status agent-news
+```
+正常运行状态示例：
+```
+│ 0  │ agent-news    │ default     │ 15.1.6  │ fork    │ 995983   │ 5m     │ 0    │ online    │ 0%       │ 118.4mb  │ root     │ disabled │
+```
+
+#### 7. 卸载/停止服务
+```bash
+pm2 delete agent-news
+```
+
+### 部署配置
+- **进程管理**：使用 ecosystem.config.js 配置 PM2
+- **日志存储**：PM2 自动管理应用日志
+- **自动重启**：PM2 监控进程，意外退出时自动重启
+- **开机自启**：通过 `pm2 startup` 和 `pm2 save` 配置开机自启动
+
+
+## 查看服务的状态
+
+### PM2 查看服务状态
+
+```bash
+ssh root@118.145.101.171 "pm2 status agent-news"
+```
+
+### 验证服务的状态码和数据库
+```bash
+curl ${BASE_URL:-http://118.145.101.171}/api/categories
+```

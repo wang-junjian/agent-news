@@ -40,7 +40,21 @@ npm run dev
 
 要在生产环境中部署此应用，请遵循以下步骤：
 
-### 1. 构建应用
+### 1. 安装依赖
+
+```bash
+npm install
+```
+
+### 2. 设置数据库
+
+```bash
+npm run setup
+```
+
+这会创建 SQLite 数据库并插入示例文章。
+
+### 3. 构建应用
 
 首先，生成优化后的生产版本：
 
@@ -48,7 +62,7 @@ npm run dev
 npm run build
 ```
 
-### 2. 使用 PM2 部署
+### 4. 使用 PM2 部署
 
 项目包含一个 `ecosystem.config.js` 文件，用于 PM2 进程管理。它配置为直接运行 Next.js 生产服务器。
 
