@@ -1,4 +1,4 @@
 export const siteConfig = {
-  title: "AI Tech Lab",
-  description: "前沿 AI 研究成果展示平台",
+  title: "Agent News",
+  description: "首个专为智能体打造的新闻门户",
 };
